@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="#ffffffff"
+    android:paddingTop="1dp"
+    android:paddingLeft="1dp"
+    android:paddingRight="1dp"
+    android:paddingBottom="1dp" >
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        >
+        <EditText
+            android:id="@+id/txt_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="10dp"
+            android:maxLines="1"
+            android:textSize="20sp"
+            android:inputType="text"
+            />
+        <Button
+            android:id="@+id/btn_search"
+            android:text="@string/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            />
+    </LinearLayout>
+
+    <!--
+
+    Note the built-in ids for 'list' and 'empty'.
+    The ListItem layout is defined in item.xml.
+
+    -->
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:choiceMode="singleChoice"
+        android:background="#ffffffff"
+        />
+    <TextView
+        android:id="@android:id/empty"
+        android:text="@string/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:padding="20dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="20sp"
+        />
+
+</LinearLayout>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Search the V&amp;A (HttpURLConnection)</string>
+    <string name="search">Search</string>
+    <string name="loading">Searching V&amp;A collection</string>
+    <string name="empty">Search the V&amp;A collection</string>
+
+</resources>
