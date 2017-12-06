@@ -170,7 +170,7 @@ public class MainActivity extends ListActivity
                 }
             }
         }).start();
-    }
+    } 
 
 
     private final String getRequestText(String url)
