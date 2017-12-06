@@ -34,8 +34,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-public class MainActivity extends ListActivity
-{
+public class MainActivity extends ListActivity {
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private String mQuery;
@@ -48,19 +48,18 @@ public class MainActivity extends ListActivity
     // handler and messages for async tasks
     private static final int MSG_ITEMLIST_QUERY_COMPLETE = 1;
     private static final int MSG_ITEMLIST_THUMB_AVAILABLE = 2;
-    private Handler mHandler = new Handler()
-    {
-        public void handleMessage(Message msg)
-        {
-            switch(msg.what)
-            {
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+
+            switch(msg.what) {
+
                 case MSG_ITEMLIST_QUERY_COMPLETE:
                     if((mProgress != null) && (mProgress.isShowing())) mProgress.dismiss();
                     mItemListAdapter.notifyDataSetChanged();
                     mListView.smoothScrollToPosition(0);
                     updateThumbs();
                     break;
-
 
                 case MSG_ITEMLIST_THUMB_AVAILABLE: // called for each thumb!
                     mItemListAdapter.notifyDataSetChanged();
@@ -73,8 +72,8 @@ public class MainActivity extends ListActivity
 
 
 
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -86,10 +85,8 @@ public class MainActivity extends ListActivity
         mListView = (ListView) findViewById(android.R.id.list);
         mDefaultThumb = ((BitmapDrawable)(getDrawable(R.drawable.image_default_thumb))).getBitmap();
 
-        ((Button) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View view)
-            {
+        ((Button) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
                 View focused = getCurrentFocus();
                 if (focused != null) {
                     focused.clearFocus();
@@ -104,20 +101,18 @@ public class MainActivity extends ListActivity
 
 
 
-    private final void search()
-    {
+    private final void search() {
+
         mQuery = ((EditText) findViewById(R.id.txt_search)).getText().toString().trim();
 
         if(mQuery.length() == 0) return;  // sanity check
 
         mProgress = ProgressDialog.show(this, null, getString(R.string.loading));
 
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
-                try
-                {
+        new Thread(new Runnable() {
+            public void run() {
+
+                try {
                     String url = "http://www.vam.ac.uk/api/json/museumobject/search?images=1&q="
                                + URLEncoder.encode(mQuery, StandardCharsets.UTF_8.name());
                     String response = getRequestText(url);
@@ -127,8 +122,7 @@ public class MainActivity extends ListActivity
 
                     JSONObject json = new JSONObject(response);
                     JSONArray records = json.getJSONArray("records");
-                    for(int i=0; i<records.length(); i++)
-                    {
+                    for(int i=0; i<records.length(); i++) {
                         JSONObject obj = records.getJSONObject(i);
                         JSONObject fields = obj.getJSONObject("fields");
                         Item item = new Item(fields.getString("artist"),
@@ -137,8 +131,7 @@ public class MainActivity extends ListActivity
                         mItemList.add(item);
                     }
                 }
-                catch(Exception e)
-                {
+                catch(Exception e) {
                     Log.e(TAG, "search()", e);
                 }
 
@@ -150,18 +143,14 @@ public class MainActivity extends ListActivity
 
 
 
-    private final void updateThumbs()
-    {
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
+    private final void updateThumbs() {
+        new Thread(new Runnable() {
+            public void run() {
+
                 ListIterator<Item> it = mItemList.listIterator();
-                while(it.hasNext())
-                {
+                while(it.hasNext()) {
                     Item item = it.next();
-                    if(item.image_url.length() > 0)
-                    {
+                    if(item.image_url.length() > 0) {
                         Bitmap thumb = getRequestImage(item.image_url);
                         if(thumb != null)   item.image_thumb = thumb;
                         else                item.image_thumb = mDefaultThumb;
@@ -170,17 +159,16 @@ public class MainActivity extends ListActivity
                 }
             }
         }).start();
-    } 
+    }
 
 
-    private final String getRequestText(String url)
-    {
+    private final String getRequestText(String url) {
+
         String result = null;
         InputStream is = null;
         HttpURLConnection connection = null;
 
-        try
-        {
+        try {
             URL _url = new URL(url);
             connection = (HttpURLConnection) _url.openConnection();
             connection.setConnectTimeout(10 * 1000);
@@ -191,8 +179,7 @@ public class MainActivity extends ListActivity
             StringBuilder mResponseBuffer = new StringBuilder(512);
             char[] mReadBuffer = new char[512];
             int chars_read;
-            while((chars_read = in.read(mReadBuffer)) > 0)
-            {
+            while((chars_read = in.read(mReadBuffer)) > 0) {
                 mResponseBuffer.append(mReadBuffer, 0, chars_read);
             }
 
@@ -200,10 +187,10 @@ public class MainActivity extends ListActivity
         }
         catch (SocketTimeoutException ste)  { /* handle timeout */}
         catch (IOException ioe)             { /* handle IO exception */}
-        catch (Exception e)                 { /* handle any other error */
-                                              Log.e(TAG, "getRequestText()", e);}
-        finally
-        {
+        catch (Exception e) {                 /* handle any other error */
+            Log.e(TAG, "getRequestText()", e);
+        }
+        finally {
             if(is != null){try {is.close();} catch (Exception e) {}}
             if(connection != null){connection.disconnect();}
         }
@@ -212,14 +199,13 @@ public class MainActivity extends ListActivity
     }
 
 
-    private final Bitmap getRequestImage(String url)
-    {
+    private final Bitmap getRequestImage(String url) {
+
         Bitmap result = null;
         BufferedInputStream bis = null;
         HttpURLConnection connection = null;
 
-        try
-        {
+        try {
             URL _url = new URL(url);
             connection = (HttpURLConnection) _url.openConnection();
             connection.setConnectTimeout(10 * 1000);
@@ -229,10 +215,10 @@ public class MainActivity extends ListActivity
         }
         catch (SocketTimeoutException ste)  { /* handle timeout */}
         catch (IOException ioe)             { /* handle IO exception */}
-        catch (Exception e)                 { /* handle any other error */
-                                              Log.e(TAG, "getRequestText()", e);}
-        finally
-        {
+        catch (Exception e) {                 /* handle any other error */
+            Log.e(TAG, "getRequestText()", e);
+        }
+        finally {
             if(bis != null){try {bis.close();} catch (Exception e) {}}
             if(connection != null){connection.disconnect();}
         }
@@ -244,18 +230,15 @@ public class MainActivity extends ListActivity
     //
     // not used here, just for completeness...
     //
-    private final String postRequestText(String url, Map<String, String> params)
-    {
+    private final String postRequestText(String url, Map<String, String> params) {
         String result = null;
         InputStream is = null;
         HttpURLConnection connection = null;
 
-        try
-        {
+        try {
             // build post data
             StringBuilder sb = new StringBuilder();
-            for (Map.Entry<String,String> param : params.entrySet())
-            {
+            for (Map.Entry<String,String> param : params.entrySet()) {
                 if (sb.length() != 0) sb.append('&');
                 sb.append(param.getKey());
                 sb.append('=');
@@ -281,8 +264,7 @@ public class MainActivity extends ListActivity
             StringBuilder mResponseBuffer = new StringBuilder(512);
             char[] mReadBuffer = new char[512];
             int chars_read;
-            while((chars_read = in.read(mReadBuffer)) > 0)
-            {
+            while((chars_read = in.read(mReadBuffer)) > 0) {
                 mResponseBuffer.append(mReadBuffer, 0, chars_read);
             }
 
@@ -290,15 +272,14 @@ public class MainActivity extends ListActivity
         }
         catch (SocketTimeoutException ste)  { /* handle timeout */}
         catch (IOException ioe)             { /* handle IO exception */}
-        catch (Exception e)                 { /* handle any other error */
-            Log.e(TAG, "getRequestText()", e);}
-        finally
-        {
+        catch (Exception e) {                 /* handle any other error */
+            Log.e(TAG, "getRequestText()", e);
+        }
+        finally {
             if(is != null){try {is.close();} catch (Exception e) {}}
             if(connection != null){connection.disconnect();}
         }
 
         return result;
     }
-
 }
